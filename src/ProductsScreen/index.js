@@ -1,0 +1,82 @@
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { styles } from "./style";
+import Arrow from "../assets/arrow-right.png";
+import { useFonts } from "expo-font";
+import { useState, useEffect } from "react";
+
+export default function ProductsScreen({ navigation }) {
+  // Fonte
+  const [fontsLoaded] = useFonts({
+    "Jost-Regular": require("../assets/fonts/Jost/Jost-Regular.ttf"),
+    "Jost-SemiBold": require("../assets/fonts/Jost/Jost-SemiBold.ttf"),
+    "Jost-Medium": require("../assets/fonts/Jost/Jost-Medium.ttf"),
+    "Jost-Light": require("../assets/fonts/Jost/Jost-Light.ttf"),
+    "Jost-ExtraLight": require("../assets/fonts/Jost/Jost-ExtraLight.ttf"),
+    "Jost-Bold": require("../assets/fonts/Jost/Jost-Bold.ttf"),
+  });
+
+  const [produtos, setProdutos] = useState([]);
+
+  const URL =
+    "https://team-code-7jpa-k4auch2q7-kauarprodrigues-5332s-projects.vercel.app/me/produtos";
+
+  async function chamar() {
+    try {
+      const resp = await fetch(URL);
+      const html = await resp.text();
+
+      const itens = html.match(/<div class="item">([\s\S]*?)<\/div>/g) || [];
+
+      const lista = itens.map((item) => {
+        const nome = item.match(/<h3>(.*?)<\/h3>/)?.[1];
+        const preco = item.match(/<p>(.*?)<\/p>/)?.[1];
+        const img = item.match(/<img src="(.*?)"/)?.[1];
+
+        return { nome, preco, img };
+      });
+
+      setProdutos(lista);
+    } catch (err) {
+      console.log("Erro:", err);
+    }
+  }
+
+  useEffect(() => {
+    chamar();
+  }, []);
+
+  if (!fontsLoaded) {
+    return <View style={{ flex: 1, backgroundColor: "white" }} />;
+  }
+
+  return (
+    <ScrollView
+      style={styles.main}>
+      {/* Header */}
+      <View style={styles.containerHeader}>
+        <TouchableOpacity
+          style={styles.voltar}
+          activeOpacity={1}
+          onPress={() => navigation.navigate("StoreScreen")}
+        >
+          <Image source={Arrow} style={styles.arrowImg} />
+        </TouchableOpacity>
+
+        <Text style={styles.textHeader}>Coleções Exclusivas</Text>
+      </View>
+
+      {/* Produtos */}
+      <View style={styles.containerProduct}>
+        {produtos.map((item, index) => (
+          <View style={styles.product} key={index}>
+            <Image source={{ uri: item.img }} style={styles.bolsaTeste} />
+            <View style={styles.texts}>
+              <Text style={styles.nomeBolsa}>{item.nome}</Text>
+              <Text style={styles.precoBolsa}>{item.preco}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+    </ScrollView>
+  );
+}
