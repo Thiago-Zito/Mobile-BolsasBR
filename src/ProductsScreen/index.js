@@ -17,29 +17,27 @@ export default function ProductsScreen({ navigation }) {
 
   const [produtos, setProdutos] = useState([]);
 
-  const URL =
-    "https://team-code-7jpa-k4auch2q7-kauarprodrigues-5332s-projects.vercel.app/me/produtos";
+  const URL = "https://team-code-7jpa-kauarprodrigues-5332s-projects.vercel.app/api/produtos";
 
-  async function chamar() {
-    try {
-      const resp = await fetch(URL);
-      const html = await resp.text();
+async function chamar() {
+  try {
 
-      const itens = html.match(/<div class="item">([\s\S]*?)<\/div>/g) || [];
+    const resp = await fetch(URL);
+    const data = await resp.json();
 
-      const lista = itens.map((item) => {
-        const nome = item.match(/<h3>(.*?)<\/h3>/)?.[1];
-        const preco = item.match(/<p>(.*?)<\/p>/)?.[1];
-        const img = item.match(/<img src="(.*?)"/)?.[1];
+    const produtos = data.map(item => ({
+      id: item.id,
+      nome: item.nome,
+      preco: item.preco,
+      img: item.imagem
+    }));
 
-        return { nome, preco, img };
-      });
+    setProdutos(produtos);
 
-      setProdutos(lista);
-    } catch (err) {
-      console.log("Erro:", err);
-    }
+  } catch (err) {
+    console.log("Erro:", err);
   }
+}
 
   useEffect(() => {
     chamar();
