@@ -9,7 +9,7 @@ import {
   Pressable,
   TextInput,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styles } from "./style";
 import imageBackground from "../assets/background-img.png";
 import logo from "../assets/logo.png";
@@ -21,67 +21,6 @@ import Close from "../assets/close-white.png";
 import Line from "../assets/line.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../services/api";
-
-const [email, setEmail] = useState("");
-const [senha, setSenha] = useState("");
-const [nome, setNome] = useState(""); // Para o cadastro
-const [confirmarSenha, setConfirmarSenha] = useState(""); // Para o cadastro
-
-// Função de login
-async function realizarLogin() {
-  if (!email || !senha) {
-    alert("Por favor, preencha todos os campos");
-    return;
-  }
-
-  try {
-    const resp = await api.post("/api/login", {
-      email: email,
-      senha: senha,
-    });
-
-    // Se deu certo salvamos o token no celular
-    await AsyncStorage.setItem("@token_app", resp.data.access_token);
-
-    // E navegamos para a loja
-    navigation.replace("StoreScreen");
-  } catch (err) {
-    alert("Email ou senha incorretos");
-  }
-}
-
-// função de Cadastro
-async function realizarCadastro() {
-  if (senha != confirmarSenha) {
-    alert("As senhas não coincidem");
-    return;
-  }
-
-  try {
-    await api.post('/api/register', {
-      nome: nome,
-      email: email,
-      senha: senha
-    });
-
-    alert("Conta criada com sucesso! Agora faça seu login.");
-    toggleCadastro(); // Fecha o modal de cadastro
-    setLoginAtivo(true); // Abre o de login
-  } catch (err) {
-    alert("Erro ao cadastrar. Verifique os dados ou se o e-mail já existe.");
-  }
-}
-
-// UseEffect para o usuário não precisar mais logar desde que entra pela primeira vez
-useEffect(() => {
-  async function checarToken() {
-    const token = await AsyncStorage.getItem('@token_app');
-    if (token) {
-      navigation.replace('StoreScreen');
-    }
-  }
-  checarToken();
-}, []);
 
 // Construindo uma lista que as informacoes de cada card
 const DATA = [
@@ -123,6 +62,68 @@ const { width } = Dimensions.get("window");
 export default function WelcomeScreen({ navigation }) {
   const [loginAtivo, setLoginAtivo] = useState(false);
   const [cadastroAtivo, setCadastroAtivo] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [nome, setNome] = useState(""); // Para o cadastro
+  const [confirmarSenha, setConfirmarSenha] = useState(""); // Para o cadastro
+
+  // Função de login
+  async function realizarLogin() {
+    if (!email || !senha) {
+      alert("Por favor, preencha todos os campos");
+      return;
+    }
+
+    try {
+      const resp = await api.post("/api/login", {
+        email: email,
+        senha: senha,
+      });
+
+      // Se deu certo salvamos o token no celular
+      await AsyncStorage.setItem("@token_app", resp.data.access_token);
+
+      // E navegamos para a loja
+      navigation.replace("StoreScreen");
+    } catch (err) {
+      alert("Email ou senha incorretos");
+    }
+  }
+
+  // função de Cadastro
+  async function realizarCadastro() {
+    if (senha != confirmarSenha) {
+      alert("As senhas não coincidem");
+      return;
+    }
+
+    try {
+      await api.post('/api/register', {
+        nome: nome,
+        email: email,
+        senha: senha
+      });
+
+      alert("Conta criada com sucesso! Agora faça seu login.");
+      toggleCadastro(); // Fecha o modal de cadastro
+      setLoginAtivo(true); // Abre o de login
+    } catch (err) {
+      console.log(err.response?.data || err.message);
+      alert("Erro ao cadastrar");
+    }
+  }
+
+  // UseEffect para o usuário não precisar mais logar desde que entra pela primeira vez
+  useEffect(() => {
+    async function checarToken() {
+      const token = await AsyncStorage.getItem('@token_app');
+      if (token) {
+        navigation.replace('StoreScreen');
+      }
+    }
+    checarToken();
+  }, []);
 
   const toggleLogin = () => {
     setLoginAtivo(!loginAtivo);
