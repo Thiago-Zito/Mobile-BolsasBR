@@ -19,6 +19,69 @@ import { LinearGradient } from "expo-linear-gradient";
 import Arrow from "../assets/arrow-right-white.png";
 import Close from "../assets/close-white.png";
 import Line from "../assets/line.png";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "../services/api";
+
+const [email, setEmail] = useState("");
+const [senha, setSenha] = useState("");
+const [nome, setNome] = useState(""); // Para o cadastro
+const [confirmarSenha, setConfirmarSenha] = useState(""); // Para o cadastro
+
+// Função de login
+async function realizarLogin() {
+  if (!email || !senha) {
+    alert("Por favor, preencha todos os campos");
+    return;
+  }
+
+  try {
+    const resp = await api.post("/api/login", {
+      email: email,
+      senha: senha,
+    });
+
+    // Se deu certo salvamos o token no celular
+    await AsyncStorage.setItem("@token_app", resp.data.access_token);
+
+    // E navegamos para a loja
+    navigation.replace("StoreScreen");
+  } catch (err) {
+    alert("Email ou senha incorretos");
+  }
+}
+
+// função de Cadastro
+async function realizarCadastro() {
+  if (senha != confirmarSenha) {
+    alert("As senhas não coincidem");
+    return;
+  }
+
+  try {
+    await api.post('/api/register', {
+      nome: nome,
+      email: email,
+      senha: senha
+    });
+
+    alert("Conta criada com sucesso! Agora faça seu login.");
+    toggleCadastro(); // Fecha o modal de cadastro
+    setLoginAtivo(true); // Abre o de login
+  } catch (err) {
+    alert("Erro ao cadastrar. Verifique os dados ou se o e-mail já existe.");
+  }
+}
+
+// UseEffect para o usuário não precisar mais logar desde que entra pela primeira vez
+useEffect(() => {
+  async function checarToken() {
+    const token = await AsyncStorage.getItem('@token_app');
+    if (token) {
+      navigation.replace('StoreScreen');
+    }
+  }
+  checarToken();
+}, []);
 
 // Construindo uma lista que as informacoes de cada card
 const DATA = [
@@ -146,7 +209,10 @@ export default function WelcomeScreen({ navigation }) {
       </TouchableOpacity>
 
       {/* Visitante */}
-      <Pressable style={styles.visitante} onPress={() => navigation.navigate('StoreScreen')}>
+      <Pressable
+        style={styles.visitante}
+        onPress={() => navigation.navigate("StoreScreen")}
+      >
         <Text style={styles.visitanteText}>Continuar como Visitante</Text>
       </Pressable>
 
@@ -180,6 +246,9 @@ export default function WelcomeScreen({ navigation }) {
             <TextInput
               style={styles.containerTextInput}
               placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
               placeholderTextColor="#ffffff4f"
             />
           </View>
@@ -187,6 +256,9 @@ export default function WelcomeScreen({ navigation }) {
             <TextInput
               style={styles.containerTextInput}
               placeholder="Senha"
+              secureTextEntry
+              value={senha}
+              onChangeText={setSenha}
               placeholderTextColor="#ffffff4f"
             />
           </View>
@@ -195,7 +267,7 @@ export default function WelcomeScreen({ navigation }) {
               <Text style={styles.passwordText}>Esqueci minha senha</Text>
             </Pressable>
           </View>
-          <TouchableOpacity style={styles.touchableLogin} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.touchableLogin} onPress={realizarLogin} activeOpacity={0.7}>
             <Text style={styles.touchableLoginText}>Login</Text>
           </TouchableOpacity>
         </View>
@@ -246,7 +318,18 @@ export default function WelcomeScreen({ navigation }) {
         <View style={styles.containerInput}>
           <TextInput
             style={styles.containerTextInput}
+            placeholder="Nome *"
+            value={nome}
+            onChangeText={setNome}
+            placeholderTextColor="#ffffff4f"
+          />
+        </View>
+        <View style={styles.containerInput}>
+          <TextInput
+            style={styles.containerTextInput}
             placeholder="Email *"
+            value={email}
+            onChangeText={setEmail}
             placeholderTextColor="#ffffff4f"
           />
         </View>
@@ -254,6 +337,8 @@ export default function WelcomeScreen({ navigation }) {
           <TextInput
             style={styles.containerTextInput}
             placeholder="Senha *"
+            value={senha}
+            onChangeText={setSenha}
             placeholderTextColor="#ffffff4f"
           />
         </View>
@@ -261,10 +346,12 @@ export default function WelcomeScreen({ navigation }) {
           <TextInput
             style={styles.containerTextInput}
             placeholder="Confirmar senha *"
+            value={confirmarSenha}
+            onChangeText={setConfirmarSenha}
             placeholderTextColor="#ffffff4f"
           />
         </View>
-        <TouchableOpacity style={styles.touchableLogin} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.touchableLogin} onPress={realizarCadastro} activeOpacity={0.7}>
           <Text style={styles.touchableLoginText}>Confirmar</Text>
         </TouchableOpacity>
       </LinearGradient>

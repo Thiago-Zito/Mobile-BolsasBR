@@ -3,6 +3,7 @@ import { styles } from "./style";
 import Arrow from "../assets/arrow-right.png";
 import { useFonts } from "expo-font";
 import { useState, useEffect } from "react";
+import api from "../services/api";
 
 export default function ProductsScreen({ navigation }) {
   // Fonte
@@ -17,27 +18,31 @@ export default function ProductsScreen({ navigation }) {
 
   const [produtos, setProdutos] = useState([]);
 
-  const URL = "https://team-code-7jpa-kauarprodrigues-5332s-projects.vercel.app/api/produtos";
+  // Como o api.js já tem a URL base, só precisamos do caminho das imagens
+  const BASE_IMG_URL =
+    "https://team-code-7jpa-k4auch2q7-kauarprodrigues-5332s-projects.vercel.app/static/uploads/";
 
-async function chamar() {
-  try {
+  async function chamar() {
+    try {
+      const resp = await api.get("/api/produtos");
+      const json = resp.data;
 
-    const resp = await fetch(URL);
-    const data = await resp.json();
+      const lista = json.map((item) => {
+        const caminhoFinal = `${BASE_IMG_URL}${item.imagem}`;
 
-    const produtos = data.map(item => ({
-      id: item.id,
-      nome: item.nome,
-      preco: item.preco,
-      img: item.imagem
-    }));
+        return {
+          id: item.id,
+          nome: item.nome,
+          preco: `R$ ${item.preco.toFixed(2)}`,
+          img: caminhoFinal,
+        };
+      });
 
-    setProdutos(produtos);
-
-  } catch (err) {
-    console.log("Erro:", err);
+      setProdutos(lista);
+    } catch (err) {
+      console.log("Erro:", err);
+    }
   }
-}
 
   useEffect(() => {
     chamar();
@@ -48,8 +53,7 @@ async function chamar() {
   }
 
   return (
-    <ScrollView
-      style={styles.main}>
+    <ScrollView style={styles.main}>
       {/* Header */}
       <View style={styles.containerHeader}>
         <TouchableOpacity
@@ -65,15 +69,20 @@ async function chamar() {
 
       {/* Produtos */}
       <View style={styles.containerProduct}>
-        {produtos.map((item, index) => (
-          <View style={styles.product} key={index}>
-            <Image source={{ uri: item.img }} style={styles.bolsaTeste} />
-            <View style={styles.texts}>
-              <Text style={styles.nomeBolsa}>{item.nome}</Text>
-              <Text style={styles.precoBolsa}>{item.preco}</Text>
+        {produtos.length === 0 && <Text>Carregando ou lista vazia...</Text>}
+
+        {produtos.map((item) => {
+          console.log("Renderizando imagem:", item.img);
+          return (
+            <View style={styles.product} key={item.id}>
+              <Image source={{ uri: item.img }} style={styles.bolsaTeste} />
+              <View style={styles.texts}>
+                <Text style={styles.nomeBolsa}>{item.nome}</Text>
+                <Text style={styles.precoBolsa}>{item.preco}</Text>
+              </View>
             </View>
-          </View>
-        ))}
+          );
+        })}
       </View>
     </ScrollView>
   );

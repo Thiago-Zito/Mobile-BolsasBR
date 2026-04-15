@@ -1,0 +1,19 @@
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const api = axios.create({
+  baseURL: 'https://team-code-7jpa-kauarprodrigues-5332s-projects.vercel.app', 
+});
+
+// Interceptor para injetar o Token JWT automaticamente, se houver
+api.interceptors.request.use(async (config) => {
+  const token = await AsyncStorage.getItem('@token_app');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+export default api;
