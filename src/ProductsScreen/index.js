@@ -3,6 +3,7 @@ import { styles } from "./style";
 import Arrow from "../assets/arrow-right.png";
 import { useFonts } from "expo-font";
 import { useState, useEffect } from "react";
+import api from "../services/api"
 
 export default function ProductsScreen({ navigation }) {
   // Fonte
@@ -17,13 +18,10 @@ export default function ProductsScreen({ navigation }) {
 
   const [produtos, setProdutos] = useState([]);
 
-  const URL = "http://127.0.0.1:8000/api/produtos";
-
 async function chamar() {
   try {
-
-    const resp = await fetch(URL);
-    const data = await resp.json();
+    const resp = await api.get("/api/produtos")
+    const data = resp.data;
 
     const produtos = data.map(item => ({
       id: item.id,
