@@ -115,15 +115,15 @@ export default function WelcomeScreen({ navigation }) {
   }
 
   // UseEffect para o usuário não precisar mais logar desde que entra pela primeira vez
-  // useEffect(() => {
-  //   async function checarToken() {
-  //     const token = await AsyncStorage.getItem('@token_app');
-  //     if (token) {
-  //       navigation.replace('StoreScreen');
-  //     }
-  //   }
-  //   checarToken();
-  // }, []);
+  useEffect(() => {
+    async function checarToken() {
+      const token = await AsyncStorage.getItem('@token_app');
+      if (token) {
+        navigation.replace('StoreScreen');
+      }
+    }
+    checarToken();
+  }, []);
 
   const toggleLogin = () => {
     setLoginAtivo(!loginAtivo);
