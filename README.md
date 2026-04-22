@@ -96,7 +96,7 @@ ipconfig
 Procure algo como:
 
 ```
-192.168.0.13
+192.168.0.43
 ```
 
 ---
