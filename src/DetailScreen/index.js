@@ -61,31 +61,43 @@ export default function DetailScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView style={styles.containerEl}>
         {/* Imagem do Produto */}
-        <Image source={{ uri: produto.imagem }} style={styles.image} />
-
         <View style={styles.content}>
+          <Text style={styles.codProduct}>M2752_{produto.id}</Text>
           <Text style={styles.title}>{produto.nome}</Text>
-          <Text style={styles.price}>{produto.preco}</Text>
-
-          <Text style={styles.descriptionTitle}>Descrição</Text>
-          <Text style={styles.description}>
-            {produto.descricao ||
-              "Nenhuma descrição disponível para este produto exclusivo."}
-          </Text>
+          <Text style={styles.price}>R$ {produto.preco}</Text>
         </View>
-      </ScrollView>
 
-      {/* Botão de Voltar ou Comprar */}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.buttonText}>Voltar</Text>
+        <View style={styles.contentCenter}>
+          <View style={styles.titleDetails}>
+            <Text style={styles.nome}>Categoria</Text>
+            <Text style={styles.category}>Bleu {produto.categoria}</Text>
+          </View>
+
+          <View style={styles.imageContent}>
+            <Image source={{ uri: produto.detalhe1 }} style={styles.image}/>
+            <Image source={{ uri: produto.detalhe2 }} style={styles.image}/>
+            <Image source={{ uri: produto.detalhe3 }} style={styles.image}/>
+          </View>
+
+          <View style={{ height: 1, backgroundColor: 'gray', marginVertical: 10, marginTop: 20, opacity: 0.7 }} />
+
+          <View style={styles.titleDetails}>
+            <Text style={styles.nome}>Linha</Text>
+            <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.goBack()}
+            >
+              <Text style={styles.category}>◄ Voltar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <TouchableOpacity style={styles.buttonComprar}>
+          <Text style={styles.textComprar}>Entre em contato para comprar</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </View>
   );
 }

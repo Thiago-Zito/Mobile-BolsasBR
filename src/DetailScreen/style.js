@@ -25,11 +25,15 @@ export const styles = StyleSheet.create({
   infoContainer: {
     marginBottom: 40,
   },
+  containerEl: {
+    margin: 25,
+  },
   title: {
     fontFamily: "Jost-Regular",
     fontSize: 28,
     color: "#000000",
     marginBottom: 10,
+    marginTop: 10,
   },
   price: {
     fontFamily: "Jost-Regular",
@@ -125,9 +129,49 @@ export const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
   },
-  image: {
-    width: "50%",
-    height: 400,
-    resizeMode: "cover",
+  imageContent: {
+    display: "flex",
+    flexDirection: "row",
   },
+  image: {
+    margin: 4,
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 5,
+    width: "100",
+    height: "100",
+  },
+  titleDetails: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  content: {
+    marginTop: 50,
+  },
+  contentCenter: {
+    marginTop: 50,
+  },
+  nome: {
+    fontSize: 18,
+    fontStyle: "normal",
+    fontWeight: "bold",
+  },
+  category: {
+    fontSize: 18,
+    fontStyle: "italic",
+  },
+  buttonComprar: {
+    marginTop: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "black",
+    padding: 15,
+    borderRadius: 30,
+  },
+  textComprar:{
+    color: "white",
+    fontSize: 15,
+  }
 });
