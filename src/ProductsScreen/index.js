@@ -62,6 +62,7 @@ export default function ProductsScreen({ navigation }) {
       {/* Produtos */}
       <View style={styles.containerProduct}>
         {produtos.map((item, index) => (
+          
           <TouchableOpacity
             style={styles.product}
             key={index}
