@@ -68,12 +68,14 @@ export default function WelcomeScreen({ navigation }) {
   const [nome, setNome] = useState(""); // Para o cadastro
   const [confirmarSenha, setConfirmarSenha] = useState(""); // Para o cadastro
 
+  // Verificar se tem texto no text input
+  const camposPreenchidos =
+    nome.trim() && email.trim() && senha.trim() && confirmarSenha.trim();
+
+  const loginValido = email.trim() && senha.trim();
+
   // Função de login
   async function realizarLogin() {
-    if (!email || !senha) {
-      alert("Por favor, preencha todos os campos");
-      return;
-    }
 
     try {
       const resp = await api.post("/api/login", {
@@ -83,6 +85,9 @@ export default function WelcomeScreen({ navigation }) {
 
       // Se deu certo salvamos o token no celular
       await AsyncStorage.setItem("@token_app", resp.data.access_token);
+
+      // Se deu certo salvamos o nome no celular
+      await AsyncStorage.setItem("@nome_usuario", resp.data.nome);
 
       // E navegamos para a loja
       navigation.replace("StoreScreen");
@@ -99,10 +104,10 @@ export default function WelcomeScreen({ navigation }) {
     }
 
     try {
-      await api.post('/api/register', {
+      await api.post("/api/register", {
         nome: nome,
         email: email,
-        senha: senha
+        senha: senha,
       });
 
       alert("Conta criada com sucesso! Agora faça seu login.");
@@ -117,9 +122,9 @@ export default function WelcomeScreen({ navigation }) {
   // UseEffect para o usuário não precisar mais logar desde que entra pela primeira vez
   useEffect(() => {
     async function checarToken() {
-      const token = await AsyncStorage.getItem('@token_app');
+      const token = await AsyncStorage.getItem("@token_app");
       if (token) {
-        navigation.replace('StoreScreen');
+        navigation.replace("StoreScreen");
       }
     }
     checarToken();
@@ -268,7 +273,15 @@ export default function WelcomeScreen({ navigation }) {
               <Text style={styles.passwordText}>Esqueci minha senha</Text>
             </Pressable>
           </View>
-          <TouchableOpacity style={styles.touchableLogin} onPress={realizarLogin} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={[
+              styles.touchableLogin,
+              { backgroundColor: loginValido ? "#fff" : "#555" },
+            ]}
+            disabled={!loginValido}
+            onPress={realizarLogin}
+            activeOpacity={0.7}
+          >
             <Text style={styles.touchableLoginText}>Login</Text>
           </TouchableOpacity>
         </View>
@@ -352,7 +365,15 @@ export default function WelcomeScreen({ navigation }) {
             placeholderTextColor="#ffffff4f"
           />
         </View>
-        <TouchableOpacity style={styles.touchableLogin} onPress={realizarCadastro} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={[
+            styles.touchableLogin,
+            { backgroundColor: camposPreenchidos ? "#fff" : "#555" },
+          ]}
+          disabled={!camposPreenchidos}
+          onPress={realizarCadastro}
+          activeOpacity={0.7}
+        >
           <Text style={styles.touchableLoginText}>Confirmar</Text>
         </TouchableOpacity>
       </LinearGradient>

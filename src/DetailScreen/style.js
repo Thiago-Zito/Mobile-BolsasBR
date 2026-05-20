@@ -1,177 +1,148 @@
 import { StyleSheet } from "react-native";
+import { Dimensions } from "react-native";
+const { width } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
-  container: {
+  main: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fff",
   },
-  scrollContent: {
-    paddingHorizontal: 24,
-    paddingTop: 40,
-    paddingBottom: 100, // Espaço para o botão flutuante não sobrepor o conteúdo
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  productCode: {
-    fontFamily: "Jost-Regular",
-    fontSize: 14,
-    color: "#333333",
-    letterSpacing: 1.5,
-  },
-  infoContainer: {
-    marginBottom: 40,
-  },
-  containerEl: {
-    margin: 25,
-  },
-  title: {
-    fontFamily: "Jost-Regular",
-    fontSize: 28,
-    color: "#000000",
-    marginBottom: 10,
-    marginTop: 10,
-  },
-  price: {
-    fontFamily: "Jost-Regular",
-    fontSize: 18,
-    color: "#000000",
-  },
-  colorsSection: {
-    marginBottom: 40,
-  },
-  colorsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  sectionTitle: {
-    fontFamily: "Jost-Medium",
-    fontSize: 16,
-    color: "#000000",
-  },
-  selectedColorText: {
-    fontFamily: "Jost-Regular",
-    fontSize: 16,
-    color: "#333333",
-  },
-  thumbnailsContainer: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  thumbnailWrapper: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#E5E5E5", // Borda padrão cinza clarinho
+
+  center: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    overflow: "hidden",
-    backgroundColor: "#F9F9F9",
   },
-  thumbnailSelected: {
-    borderColor: "#000000", // Borda preta quando selecionado
-    borderWidth: 1.5,
+
+  containerHeader: {
+    width: "100%",
+    paddingTop: "14%",
+    paddingHorizontal: "3%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  thumbnailImage: {
-    width: "80%",
-    height: "80%",
+
+  arrowImg: {
+    width: 20,
+    height: 20,
+    resizeMode: "contain",
+    transform: [{ rotate: "180deg" }],
+  },
+
+  buttons: {
+    flexDirection: "row",
+    gap: 10,
+  },
+
+  buttonsImg: {
+    width: 20,
+    height: 20,
     resizeMode: "contain",
   },
-  linhaSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderTopColor: "#EEEEEE",
-    paddingVertical: 25,
-  },
-  linhaRight: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  linhaValue: {
+
+  title: {
+    marginHorizontal: "5%",
+    fontSize: 21,
     fontFamily: "Jost-Regular",
-    fontSize: 16,
-    color: "#000000",
-    marginRight: 10,
+    marginTop: 10,
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#D9D9D9",
-    marginRight: 10,
+
+  codProduct: {
+    marginHorizontal: "5%",
+    color: "#838181",
+    fontSize: 13,
+    fontFamily: "Jost-Regular",
+    marginBottom: 10,
   },
-  footer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-    backgroundColor: "#ffffff",
-  },
-  buyButton: {
-    backgroundColor: "#000000",
-    borderRadius: 30,
-    paddingVertical: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buyButtonText: {
-    fontFamily: "Jost-Medium",
-    color: "#ffffff",
-    fontSize: 16,
-  },
+
   imageContent: {
-    display: "flex",
-    flexDirection: "row",
+    width: "100%",
   },
+
   image: {
-    margin: 4,
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 5,
-    width: "100",
-    height: "100",
+    width: width,
+    height: 300,
+    resizeMode: "cover",
   },
-  titleDetails: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
+
+  infoContainer: {
+    padding: "5%",
   },
-  content: {
-    marginTop: 50,
+
+  preco: {
+    fontSize: 20,
+    fontFamily: "Jost-Bold",
+    marginBottom: 10,
   },
-  contentCenter: {
-    marginTop: 50,
+
+  descricao: {
+    fontSize: 14,
+    color: "#555",
+    fontFamily: "Jost-Regular",
   },
-  nome: {
-    fontSize: 18,
-    fontStyle: "normal",
-    fontWeight: "bold",
-  },
-  category: {
-    fontSize: 18,
-    fontStyle: "italic",
-  },
-  buttonComprar: {
-    marginTop: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "black",
+
+  botao: {
+    margin: "5%",
+    backgroundColor: "#000",
     padding: 15,
-    borderRadius: 30,
+    alignItems: "center",
   },
-  textComprar:{
-    color: "white",
-    fontSize: 15,
-  }
+
+  botaoTexto: {
+    color: "#fff",
+    fontFamily: "Jost-Medium",
+  },
+
+  // Modal
+
+  modalCart: {
+    position: "absolute",
+    top: "120%",
+    width: "85%",
+    height: 65,
+    backgroundColor: "#ffffff",
+    marginLeft: 32,
+    borderRadius: 2,
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+    borderWidth: 0.5,
+    borderColor: "#bbbbbb",
+
+    shadowColor: "#797979",
+    shadowOffset: {
+      width: 10,
+      height: 10,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+
+    elevation: 5,
+  },
+
+  modalText: {
+    fontSize: 12,
+    color: "#6a6a6a",
+    fontFamily: "Jost-Regular",
+  },
+
+  modalLink: {
+    fontSize: 12,
+    color: "#000000",
+    fontFamily: "Jost-Regular",
+    borderBottomWidth: 1,
+    width: 65,
+  },
+
+  imageCheck: {
+    width: 20,
+    height: 20,
+  },
+
+  modalContainerText: {
+    flexDirection: "column",
+    marginBottom: 3,
+  },
 });

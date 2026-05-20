@@ -199,6 +199,7 @@ export const styles = StyleSheet.create({
     height: "100%",
     fontFamily: "Jost-Regular",
     paddingLeft: 15,
+    color: "#fff"
   },
 
   containerInput: {
@@ -221,7 +222,7 @@ export const styles = StyleSheet.create({
   },
 
   touchableLogin: {
-    backgroundColor: "#fff",
+    backgroundColor: "#3a3838",
     width: "87%",
     height: "5.5%",
     position: "absolute",
