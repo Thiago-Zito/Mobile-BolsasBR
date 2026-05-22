@@ -6,6 +6,8 @@ import WelcomeScreen from '../WelcomeScreen';
 import ProductsScreen from '../ProductsScreen';
 import DetailScreen from '../DetailScreen';
 import CartScreen from '../CartScreen';
+import PayScreen from '../PayScreen';
+import CheckoutScreen from '../CheckoutScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +20,8 @@ export default function Routes() {
         <Stack.Screen name="ProductsScreen" component={ProductsScreen} />
         <Stack.Screen name="DetailScreen" component={DetailScreen} />
         <Stack.Screen name="CartScreen" component={CartScreen} />
+        <Stack.Screen name="PayScreen" component={PayScreen} />
+        <Stack.Screen name="CheckoutScreen" component={CheckoutScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -19,6 +19,34 @@ export default function CartScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
 
+  const finalizarPedido = async () => {
+    try {
+      setLoading(true);
+
+      const resp = await api.get("/api_json/pagamento");
+
+      // Verifica a trava de segurança do back-end
+      if (resp.data && resp.data.mensagem) {
+          alert(resp.data.mensagem);
+          return;
+      }
+
+      const [itensCarrinho, totalGeral, dadosUsuario] = resp.data;
+
+      navigation.navigate("PayScreen", {
+        carrinho: itensCarrinho,
+        total: totalGeral,
+        usuario: dadosUsuario
+      });
+
+    } catch (error) {
+      console.error("Erro ao finalizar pedido:", error);
+      Alert.alert("Erro", "Não foi possível processar o carrinho. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const carregarCarrinho = async () => {
     try {
       setLoading(true);
@@ -155,7 +183,12 @@ export default function CartScreen({ navigation }) {
       <View style={styles.totalPrice}>
         <Text style={styles.textPrice}>R$ {total.toFixed(2)}</Text>
 
-        <TouchableOpacity style={styles.buttonFinalizar} activeOpacity={0.9}>
+        <TouchableOpacity 
+          style={styles.buttonFinalizar} 
+          activeOpacity={0.9}
+          onPress={finalizarPedido}
+          disabled={loading}
+        >
           <Text style={styles.buttonFinalizarText}>FINALIZAR</Text>
         </TouchableOpacity>
       </View>
