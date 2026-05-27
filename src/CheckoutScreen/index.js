@@ -6,7 +6,8 @@ import api from '../services/api';
 
 export default function CheckoutScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
-  const [ultimoPedido, setUltimoPedido] = useState(null);
+  const [listaPedidos, setListaPedidos] = useState([]); // Agora guarda todos os pedidos
+  const [valorTotal, setValorTotal] = useState(0); // Guarda o total geral da API
   const [dadosUsuario, setDadosUsuario] = useState(null);
 
   // Função que busca o histórico no backend
@@ -15,15 +16,14 @@ export default function CheckoutScreen({ navigation }) {
       setLoading(true);
       const resp = await api.get("/api_json/meus-pedidos");
 
-      // Desestrutura o retorno da sua rota Python: [pedidos, total_geral, usuario]
+      // Desestrutura o retorno da rota Python: [pedidos, total_geral, usuario]
       const [pedidos, totalGeral, usuario] = resp.data;
 
       setDadosUsuario(usuario);
 
       if (pedidos && pedidos.length > 0) {
-        // Pega o ÚLTIMO pedido da lista (o que acabou de ser criado no checkout)
-        const maisRecente = pedidos[pedidos.length - 1];
-        setUltimoPedido(maisRecente);
+        setListaPedidos(pedidos); // Salva a lista completa
+        setValorTotal(totalGeral); // Salva o total de todos os pedidos juntos
       }
     } catch (error) {
       console.error("Erro ao carregar recibo:", error);
@@ -51,7 +51,7 @@ export default function CheckoutScreen({ navigation }) {
   }
 
   // Se por acaso não achar nenhum pedido no banco
-  if (!ultimoPedido) {
+  if (listaPedidos.length === 0) {
     return (
       <SafeAreaView style={[styles.container, styles.center]}>
         <Text style={{ fontSize: 16, color: '#333', marginBottom: 20 }}>Nenhum pedido encontrado.</Text>
@@ -86,26 +86,35 @@ export default function CheckoutScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Informações do Pedido vindas direto do Banco de Dados */}
-        <Text style={styles.sectionTitle}>DETALHES DAENTREGA</Text>
-        <View style={styles.infoCard}>
-          <Text style={styles.infoCardText}>
-            <Text style={{fontWeight: '700'}}>Código do Pedido:</Text> #{ultimoPedido.id}
-          </Text>
-          <Text style={styles.infoCardText}>
-            <Text style={{fontWeight: '700'}}>Prazo de Entrega:</Text> {ultimoPedido.prazo_entrega} dias úteis
-          </Text>
-          <Text style={styles.infoCardText}>
-            <Text style={{fontWeight: '700'}}>Endereço:</Text> 928 Lehner Junction Apt. 047
-          </Text>
-        </View>
+        {/* Informações dos Pedidos vindas direto do Banco de Dados */}
+        <Text style={styles.sectionTitle}>DETALHES DA ENTREGA ({listaPedidos.length} ITENS)</Text>
+        
+        {/* Mapeando a lista para exibir todos os pedidos */}
+        {listaPedidos.map((pedido, index) => (
+          <View key={pedido.id || index} style={styles.infoCard}>
+            <Text style={styles.infoCardText}>
+              <Text style={{fontWeight: '700'}}>Código do Pedido:</Text> #{pedido.id}
+            </Text>
+            <Text style={styles.infoCardText}>
+              <Text style={{fontWeight: '700'}}>Prazo de Entrega:</Text> {pedido.prazo_entrega} dias úteis
+            </Text>
+            {/* Mostrando o valor individual do item para fazer sentido */}
+            <Text style={styles.infoCardText}>
+              <Text style={{fontWeight: '700'}}>Subtotal do item:</Text> R$ {pedido.total?.toFixed(2)}
+            </Text>
+            <Text style={styles.infoCardText}>
+              <Text style={{fontWeight: '700'}}>Endereço:</Text> 928 Lehner Junction Apt. 047
+            </Text>
+          </View>
+        ))}
 
         {/* Resumo Financeiro Oficial do Banco */}
         <Text style={styles.sectionTitle}>RESUMO DO PAGAMENTO</Text>
         <View style={styles.summaryCard}>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Total Pago no Cartão/Pix</Text>
-            <Text style={styles.totalValue}>R$ {ultimoPedido.total.toFixed(2)}</Text>
+            {/* Agora exibe a variável totalGeral vinda da API */}
+            <Text style={styles.totalValue}>R$ {valorTotal.toFixed(2)}</Text>
           </View>
         </View>
 
@@ -124,7 +133,7 @@ export default function CheckoutScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F9FA' },
   center: { justifyContent: 'center', alignItems: 'center', padding: 20 },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContext: 'space-between', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#E9ECEF' },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#E9ECEF' },
   backButton: { padding: 4 },
   headerTitle: { fontSize: 18, fontWeight: '600', color: '#000' },
   scrollContainer: { flex: 1 },
