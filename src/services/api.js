@@ -2,7 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = axios.create({
-  baseURL: 'http://192.168.0.14:8000'
+  // ADICIONADO: http:// e a porta :8000 (ajuste para https se já tiver certificado)
+  baseURL: 'http://teamcode123.eastus2.cloudapp.azure.com' 
 });
 
 // Interceptor para injetar o Token JWT automaticamente, se houver
